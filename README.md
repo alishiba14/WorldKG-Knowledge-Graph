@@ -41,6 +41,20 @@ Example: python3 CreateTriples.py italy-latest.osm.pbf italyTriples.ttl</li>
 <li>WorldKG_Ontology.ttl - WorldKG ontology triples in .ttl format.</li>
 <li>Manual Annotations Sample Set - In this folder, we provide the entities and classes used for evaluation of the tag-to-class mapping in WorldKG.</li>
 
+### Reference:
+If you find our work useful in your research please consider citing our paper.
+
+```
+@inproceedings{dsouza2021worldkg,
+   title={{WorldKG: A World-Scale Geographic Knowledge Graph}},
+   author={Dsouza, Alishiba and Tempelmeier, Nicolas and Yu, Ran and Gottschalk, Simon and Demidova, Elena},
+   booktitle={{CIKM} '21: The 30th {ACM} International Conference on Information and Knowledge Management},
+   year={2021},
+   publisher={{ACM}},
+   doi={10.1145/3459637.3482023}
+}
+```
+
 # License
 MIT License
 

@@ -55,45 +55,7 @@ class osm2rdf_handler(osmium.SimpleHandler):
         return words[0] + "".join(x.title() for x in words[1:])
     
     def printTriple(self, s, p, o):
-        if p in self.dict_class: 
-            if o in self.dict_class[p]:
-                rel = URIRef('http://www.worldkg.org/resource/' + s)
-                instanceOf = URIRef('http://www.w3.org/1999/02/22-rdf-syntax-ns#type')
-                res = URIRef('http://www.worldkg.org/schema/' + self.to_camel_case_classAppend(p,o))
-                self.g.add((rel, instanceOf , res))
-            if o == 'Yes':
-                rel = URIRef('http://www.worldkg.org/resource/' + s)
-                instanceOf = URIRef('http://www.w3.org/1999/02/22-rdf-syntax-ns#type')
-                res = URIRef('http://www.worldkg.org/schema/' + self.to_camel_case_class(p))
-                self.g.add((rel, instanceOf , res))
-        else:
-            if p=='Point':
-                sub = URIRef('http://www.worldkg.org/resource/' + s)
-                geoprop = URIRef('http://www.worldkg.org/schema/spatialObject')
-                geoobj = URIRef('http://www.worldkg.org/resource/geo' + s)
-                prop = URIRef('http://www.opengis.net/ont/sf#Point')
-                typ = URIRef('http://www.w3.org/1999/02/22-rdf-syntax-ns#type')
-                self.g.add((sub, geoprop, geoobj))
-                self.g.add((geoobj, typ, prop))
-                self.g.add((geoobj, self.geo["asWKT"], Literal(o, datatype=self.geo.wktLiteral)))
-            elif p == 'osmLink':
-                sub = URIRef('http://www.worldkg.org/resource/' + s)
-                prop = URIRef('http://www.worldkg.org/schema/osmLink')
-                obj = URIRef('https://www.openstreetmap.org/node/'+o)
-                self.g.add((sub,prop,obj))
-            elif p == 'name':
-                sub = URIRef('http://www.worldkg.org/resource/' + s)
-                prop = URIRef('http://www.w3.org/2000/01/rdf-schema#label')
-                self.g.add((sub, prop, Literal(o)))
-            elif p == 'wikidata':
-                sub = URIRef('http://www.worldkg.org/resource/' + s)
-                prop = URIRef("http://www.worldkg.org/schema/" + p)
-                if o.startswith('Q'):
-                    obj = URIRef('http://www.wikidata.org/wiki/' + o)
-                else:
-                    obj = Literal(o)
-                self.g.add((sub, prop, obj))
-            elif p == 'wikipedia':
+        if p == 'wikipedia':
                 sub = URIRef('http://www.worldkg.org/resource/' + s)
                 prop = URIRef("http://www.worldkg.org/schema/wikipedia" )
                 try:
@@ -108,42 +70,24 @@ class osm2rdf_handler(osmium.SimpleHandler):
                 url = 'https://'+urllib.parse.quote(url)
                 obj = URIRef(url)
                 self.g.add((sub, prop, obj))
-            else:
-                if p in self.key_list:
-                    sub = URIRef('http://www.worldkg.org/resource/' + s)
-                    prop = URIRef("http://www.worldkg.org/schema/" + self.to_camel_case_key(p))
-                    self.g.add((sub, prop, Literal(o)))
         
     def __close__(self):
         print(str(self.counts))
 
     def node(self, n):
-        if len(n.tags)>1:
-            lat = str(n.location.lat)
-            lon = str(n.location.lon)
+        if not ("wikipedia" in n.tags):
+            return
+        else:
             id = str(n.id)
-
-
-
-            point = 'Point('+str(n.location.lon)+' '+str(n.location.lat)+')'
-
-            #self.printTriple(id, "lat", lat)
-            #self.printTriple(id, "long", lon)
-            self.printTriple(id, "Point", point)
-            self.printTriple(id,"osmLink",id)
-
-
             for k,v in n.tags:
+                if k == "wikipedia":
+                    val = str(v)
+                    val=val.replace("\\", "\\\\")
+                    val=val.replace('"', '\\"')
+                    val=val.replace('\n', " ")
 
-                val = str(v)
-
-                val=val.replace("\\", "\\\\")
-                val=val.replace('"', '\\"')
-                val=val.replace('\n', " ")
-
-                k = k.replace(" ", "")
-
-                self.printTriple(id, k, val)
+                    k = k.replace(" ", "")
+                    self.printTriple(id, k, val)
 h = osm2rdf_handler()
 h.apply_file(sys.argv[1])
 h.graph.serialize(sys.argv[2],format="turtle", encoding = "utf-8" )
