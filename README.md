@@ -1,7 +1,5 @@
 # WorldKG-Knowledge-Graph 
 
-- [www.worldkg.org](http://www.worldkg.org/)
-
 This repository contains code to reproduce the WorldKG knowledge graph. 
 The WorldKG knowledge graph is a comprehensive large-scale geospatial knowledge graph based on OpenStreetMap that provides semantic representation of geographic entities from over 188 countries. WorldKG contains higher representation of geographic entities compared to other knowledge graph and can be used as an underlying data source for various applications such as geospatial question answering, geospatial data retrieval, and other cross-domain semantic data-driven applications.
 
@@ -34,15 +32,14 @@ Example: python3 CreateTriples.py italy-latest.osm.pbf italyTriples.ttl</li>
 
 <h3>File Structure</h3>
 
-<li>Key_List.csv - Contains list of OSM keys with valid OSM wiki page.</li>
-<li>OSM_Ontology_map_features.csv - Contains tags collected from OSM map features (https://wiki.openstreetmap.org/wiki/Map_features).</li>
+<li>Create a Key_List.csv file which should contain list of OSM keys with valid OSM wiki page.</li>
+<li>Create a OSM_Ontology_map_features.csv which should contain tags collected from OSM map features (https://wiki.openstreetmap.org/wiki/Map_features). The columns are key	value	sameAsDB	sameAsWiki	camel	keyCamel	appendedClass. Please see the paper for more description</li>
 <li>requirements.txt - Contains versions of python libraries used.</li>
 <li>CreateTriples.py - Main python file to create the WorldKG instance triples.</li>
 <li>WorldKG_Ontology.ttl - WorldKG ontology triples in .ttl format.</li>
-<li>Manual Annotations Sample Set - In this folder, we provide the entities and classes used for evaluation of the tag-to-class mapping in WorldKG.</li>
 
 ### Reference:
-If you find our work useful in your research please consider citing our paper.
+If you find our work useful in your research, please consider citing our paper.
 
 ```
 @inproceedings{dsouza2021worldkg,
